@@ -1,11 +1,10 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
 void main() {
   MaterialApp app = MaterialApp(
     theme: ThemeData(
-      primarySwatch: Colors.cyan),
+      primarySwatch: Colors.cyan
+    ),
     home: Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -15,18 +14,25 @@ void main() {
           )
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           children: [
-            Text("just starting...",
+            const Text("just starting...",
               style: TextStyle(
                 color: Colors.deepPurple, 
                 fontWeight: FontWeight.bold
               )
             ),
-            Text("in middle..."),
-            Text("ending...")
-          ],
+            const Text("in middle..."),
+            const Text("ending..."),
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Image.network(
+                'https://img.freepik.com/vetores-premium/fundo-de-flores-de-sakura-fundo-branco-isolado-da-flor-de-cerejeira_38668-274.jpg?w=996'
+              ),
+            ),
+          ]
         )
       ),
       bottomNavigationBar: Row(
