@@ -37,32 +37,21 @@ void main() {
           ]
         )
       ),
-      bottomNavigationBar: Row(
-        children: <Widget>[
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.menu),
-              label: const Text("Menu")
-            )
-          ),
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.list_alt),
-              label: const Text("Produtos")
-            )
-          ),
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.card_giftcard),
-              label: const Text("Kits presenteáveis")
-            )
-          )
-        ]
-      ),
-    )
+      bottomNavigationBar: BottomNavigationBar(items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.menu), 
+          label: "Menu"
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.list_alt), 
+          label: "Produtos"
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.card_giftcard), 
+          label: "Kits Presenteáveis"
+        )
+      ])
+    ),
   );
 
   runApp(app);
