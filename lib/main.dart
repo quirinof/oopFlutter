@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 void main() {
   MaterialApp app = MaterialApp(
     theme: ThemeData(
+      fontFamily: 'Ubuntu-Bold',
       primarySwatch: Colors.cyan
     ),
     home: Scaffold(
@@ -10,7 +11,7 @@ void main() {
         title: const Center(
           child: Text(
             "Coisas das Marias",
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 30)
           )
         ),
       ),
@@ -25,13 +26,14 @@ void main() {
             ),
             const Text("in middle..."),
             const Text("ending..."),
-            SizedBox(
+            FadeInImage.assetNetwork(
               width: 200,
               height: 200,
-              child: Image.network(
-                'https://img.freepik.com/vetores-premium/fundo-de-flores-de-sakura-fundo-branco-isolado-da-flor-de-cerejeira_38668-274.jpg?w=996'
-              ),
-            ),
+              fadeInDuration: const Duration(seconds: 1),
+              fadeOutDuration: const Duration(seconds: 1),
+              placeholder: 'assets/images/me.jpeg',
+              image: 'https://logospng.org/download/whatsapp/logo-whatsapp-preto-branco-256.png'
+            )
           ]
         )
       ),
