@@ -1,4 +1,5 @@
 {
     "dart.devToolsTheme": "dark",
-    "material-icon-theme.activeIconPack": "angular"
+    "material-icon-theme.activeIconPack": "angular",
+    "cmake.sourceDirectory": "C:/Users/mathe/Documents/recipes_oop/recipe1/linux"
 }

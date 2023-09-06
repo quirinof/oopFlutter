@@ -1,0 +1,10 @@
+^C:\USERS\MATHE\DOCUMENTS\RECIPES_OOP\BUILD\WINDOWS\CMAKEFILES\1CF7B680DDE8337215F9641103048465\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/mathe/Documents/recipes_oop/windows -BC:/Users/mathe/Documents/recipes_oop/build/windows --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/mathe/Documents/recipes_oop/build/windows/recipes_oop.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

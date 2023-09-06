@@ -18,14 +18,15 @@ void main() {
       body: Center(
         child: Column(
           children: [
-            const Text("just starting...",
+            const Text(
+              "just stating...",
               style: TextStyle(
                 color: Colors.deepPurple, 
                 fontWeight: FontWeight.bold
               )
             ),
             const Text("in middle..."),
-            const Text("ending..."),
+            const Text("exemple:"),
             FadeInImage.assetNetwork(
               width: 200,
               height: 200,
@@ -37,20 +38,25 @@ void main() {
           ]
         )
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.menu), 
-          label: "Menu"
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list_alt), 
-          label: "Produtos"
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.card_giftcard), 
-          label: "Kits Presenteáveis"
-        )
-      ])
+      bottomNavigationBar: Row(
+        children: [
+          Expanded(child: ElevatedButton.icon(
+            onPressed: () {}, 
+            icon: const Icon(Icons.menu), 
+            label: Text("Menu")
+          )),
+          Expanded(child: ElevatedButton.icon(
+            onPressed: () {}, 
+            icon: const Icon(Icons.list_alt), 
+            label: Text("Produtos")
+          )),
+          Expanded(child: ElevatedButton.icon(
+            onPressed: () {}, 
+            icon: const Icon(Icons.card_giftcard), 
+            label: Text("Kits Presenteáveis")
+          ))
+        ]
+      )
     ),
   );
 
