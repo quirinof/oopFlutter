@@ -13,31 +13,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Dicas"),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  child: ListTile(
-                    leading: Icon(Icons.color_lens_outlined),
-                    title: Text('Azul')
-                  )
-                ),
-                const PopupMenuItem<String>(
-                  child: ListTile(
-                    leading: Icon(Icons.color_lens),
-                    title: Text('Verde')
-                  )
-                ),
-                const PopupMenuItem<String>(
-                  child: ListTile(
-                    leading: Icon(Icons.color_lens),
-                    title: Text('Vermelho')
-                  )
-                )
-              ]
-            )
+        appBar: MainAppBarWidget(
+          tit: "Cervejas",
+          settingsMenu: const [
+            "Azul",
+            "Verde",
+            "Vermelho"
           ]
         ),
         body: DataBodyWidget(objects: const [
@@ -64,11 +45,6 @@ class NewNavBar extends StatelessWidget {
   void botaoFoiTocado(int index) {
     print("Tocaram no botão $index");
   }
-  /*
-  BottomNavigationBarItem processarUmIcone(Icon icone) {
-    return BottomNavigationBarItem(icon: icone);
-  }
-  */
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -86,13 +62,6 @@ class NewNavBar extends StatelessWidget {
 class DataBodyWidget extends StatelessWidget {
   List<String> objects;
   DataBodyWidget({this.objects = const[]});
-  /*
-  Expanded processarUmElemento(String obj){
-    return Expanded(                
-      child: Center(child: Text(obj)),
-    );
-  }
-  */
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -101,4 +70,20 @@ class DataBodyWidget extends StatelessWidget {
       ).toList()
     );
   }
+}
+
+class MainAppBarWidget extends AppBar {
+  String tit;
+  List<String> settingsMenu;
+  MainAppBarWidget({this.tit = "", this.settingsMenu = const []})
+  :super(
+    title: Text(tit),
+    actions: <Widget>[
+      PopupMenuButton<String>(
+        itemBuilder: (BuildContext context) => settingsMenu.map(
+          (its) => PopupMenuItem<String>(child: Text(its)),
+        ).toList()
+      )
+    ],
+  );
 }
