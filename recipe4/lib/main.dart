@@ -2,20 +2,95 @@ import 'package:flutter/material.dart';
 
 var dataObjects = [
   {
-    "name": "La Fin Du Monde",
-    "style": "Bock",
-    "ibu": "65"
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
   },
   {
-    "name": "Sapporo Premiume",
-    "style": "Sour Al",
-    "ibu": "54"
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
   },
   {
-    "name": "Duvel",
-    "style": "Pilsner",
-    "ibu": "82"
-  }
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
+  {
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
+  },
+  {
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
+  },
+  {
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
+  {
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
+  },
+  {
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
+  },
+  {
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
+  {
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
+  },
+  {
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
+  },
+  {
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
+  {
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
+  },
+  {
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
+  },
+  {
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
+  {
+    "beer name": "La Fin Du Monde",
+    "type": "Bock",
+    "the ibu": "65"
+  },
+  {
+    "beer name": "Sapporo Premiume",
+    "type": "Sour Al",
+    "the ibu": "54"
+  },
+  {
+    "beer name": "Duvel",
+    "type": "Pilsner",
+    "the ibu": "82"
+  },
 ];
 
 void main() {
@@ -27,14 +102,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.deepPurple),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text("Dicas"),
-            ),
-            body: DataBodyWidget(objects: dataObjects),
-            bottomNavigationBar: NewNavBar()));
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Dicas"),
+        ),
+        body: DataBodyWidget(
+          objects: dataObjects,
+          columnNames: const["Nome da Cerva", "Tipo", "o tal do IBU"],
+          propertyNames: const["beer name", "type", "the ibu"]
+        ),
+        bottomNavigationBar: NewNavBar()
+      )
+    );
   }
 }
 
@@ -59,28 +140,56 @@ class NewNavBar extends StatelessWidget {
 }
 
 class DataBodyWidget extends StatelessWidget {
-  List objects;
-  DataBodyWidget({this.objects = const []});
+  final List objects, columnNames, propertyNames;
+  DataBodyWidget({
+    this.objects = const [], 
+    this.columnNames = const [], 
+    this.propertyNames = const []
+  });
+
+  @override
+  Widget build(BuildContext context) {
+  /*
+    var columnNames = ["Nome", "Estilo", "IBU"],
+        propertyNames = ["name", "style", "ibu"];
+  */
+    return SingleChildScrollView(
+      child: Center(child: DataTable(
+        columns: columnNames.map(
+          (name) => DataColumn(
+            label: Expanded(
+              child: Text(name, style: const TextStyle(fontStyle: FontStyle.italic))
+            )
+          )
+        ).toList(),
+        rows: objects.map(
+          (obj) => DataRow(
+            cells: propertyNames.map(
+              (propName) => DataCell(Text(obj[propName]))
+            ).toList()
+          )
+        ).toList()
+      ))
+    );
+  }
+}
+
+/* class MyTileWidget extends StatelessWidget {
+  final List objects;
+  MyTileWidget({this.objects = const []});
 
   @override
   Widget build(BuildContext context) {
     var columnNames = ["Nome", "Estilo", "IBU"],
         propertyNames = ["name", "style", "ibu"];
-    return DataTable(
-      columns: columnNames.map(
-        (name) => DataColumn(
-          label: Expanded(
-            child: Text(name, style: const TextStyle(fontStyle: FontStyle.italic))
-          )
-        )
-      ).toList(),
-      rows: objects.map(
-        (obj) => DataRow(
-          cells: propertyNames.map(
-            (propName) => DataCell(Text(obj[propName]))
-          ).toList()
-        )
-      ).toList()
+    return ListView.builder(
+      itemCount: objects.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          
+        );
+      },
     );
   }
 }
+*/
