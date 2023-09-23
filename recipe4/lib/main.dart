@@ -4,92 +4,92 @@ var dataObjects = [
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
   {
     "beer name": "La Fin Du Monde",
     "type": "Bock",
-    "the ibu": "65"
+    "ibu": "65"
   },
   {
     "beer name": "Sapporo Premiume",
     "type": "Sour Al",
-    "the ibu": "54"
+    "ibu": "54"
   },
   {
     "beer name": "Duvel",
     "type": "Pilsner",
-    "the ibu": "82"
+    "ibu": "82"
   },
 ];
 
@@ -106,12 +106,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Dicas"),
+          title: const Text("Cervejas"),
         ),
-        body: DataBodyWidget(
+        body: MyTileWidget(
           objects: dataObjects,
-          columnNames: const["Nome da Cerva", "Tipo", "o tal do IBU"],
-          propertyNames: const["beer name", "type", "the ibu"]
+          columnNames: const ["Nome", "Tipo", "iBU"],
+          propertyNames: const ["beer name", "type", "ibu"],
         ),
         bottomNavigationBar: NewNavBar()
       )
@@ -129,11 +129,11 @@ class NewNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(onTap: botaoFoiTocado, items: const [
       BottomNavigationBarItem(
-        label: "Cafés",
-        icon: Icon(Icons.coffee_outlined),
+        label: "Cervejas",
+        icon: Icon(Icons.local_drink_outlined),
       ),
       BottomNavigationBarItem(
-          label: "Cervejas", icon: Icon(Icons.local_drink_outlined)),
+          label: "Café", icon: Icon(Icons.coffee_outlined)),
       BottomNavigationBarItem(label: "Nações", icon: Icon(Icons.flag_outlined))
     ]);
   }
@@ -174,22 +174,38 @@ class DataBodyWidget extends StatelessWidget {
   }
 }
 
-/* class MyTileWidget extends StatelessWidget {
-  final List objects;
-  MyTileWidget({this.objects = const []});
+class MyTileWidget extends StatelessWidget {
+  final List objects, columnNames, propertyNames;
+  MyTileWidget({
+    this.objects = const [], 
+    this.columnNames = const [], 
+    this.propertyNames = const []
+  });
 
   @override
   Widget build(BuildContext context) {
+    /*
     var columnNames = ["Nome", "Estilo", "IBU"],
-        propertyNames = ["name", "style", "ibu"];
+        propertyNames = ["beer name", "type", "ibu"];
+    */
     return ListView.builder(
       itemCount: objects.length,
       itemBuilder: (context, index) {
+        var object = objects[index];
         return ListTile(
-          
+          title: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  propertyNames.length,
+                  (i) => Text("${columnNames[i]}: ${object[propertyNames[i]]}")
+                )
+              )
+            ]
+          )
         );
-      },
+      }
     );
   }
 }
-*/
