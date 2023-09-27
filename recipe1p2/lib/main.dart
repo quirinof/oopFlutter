@@ -19,9 +19,21 @@ void main() {
         child: Center(
           child: DataTable(
             columns: const[
-              DataColumn(label: Text("Nome")),
-              DataColumn(label: Text("Estilo")),
-              DataColumn(label: Text("IBU"))
+              DataColumn(
+                label: Text("Nome", 
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                )
+              ),
+              DataColumn(
+                label: Text("Estilo", 
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                )
+              ),
+              DataColumn(
+                label: Text("IBU", 
+                  style: TextStyle(fontWeight: FontWeight.bold)
+                )
+              )
             ], 
             rows: const[
               DataRow(cells: [

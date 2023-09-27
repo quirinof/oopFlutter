@@ -146,7 +146,6 @@ class DataBodyWidget extends StatelessWidget {
     this.columnNames = const [], 
     this.propertyNames = const []
   });
-
   @override
   Widget build(BuildContext context) {
   /*
