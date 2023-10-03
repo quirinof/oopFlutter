@@ -6,10 +6,36 @@ class DataService {
   final ValueNotifier<List> tableStateNotifier = ValueNotifier([]);
 
   void carregar(index){
-    if (index == 1) carregarCervejas();
+    switch(index){
+      case 0: 
+        loadCoffees();
+      case 1: 
+        loadBeers();
+      case 2: 
+        loadNations();
+    }
   }
 
-  void carregarCervejas(){
+  void loadCoffees(){
+    tableStateNotifier.value = [
+      {
+      "name": "Cappuccino",
+      "style": "Espresso",
+      "ibu": "Amargo/Cremoso"
+      },
+      {
+      "name": "Latte",
+      "style": "Espresso",
+      "ibu": "Suave/Cremoso"
+      },
+      {
+      "name": "Mocha",
+      "style": "Espresso",
+      "ibu": "Doce"
+      }
+    ];
+  }
+  void loadBeers(){
     tableStateNotifier.value = [
       {
       "name": "La Fin Du Monde",
@@ -25,6 +51,25 @@ class DataService {
       "name": "Duvel", 
       "style": "Pilsner", 
       "ibu": "82"
+      }
+    ];
+  }
+  void loadNations(){
+    tableStateNotifier.value = [
+      {
+      "name": "Brasil",
+      "style": "Tropical",
+      "ibu": "América do Sul"
+      },
+      {
+      "name": "Rússia",
+      "style": "Polar",
+      "ibu": "Eurásia"
+      },
+      {
+      "name": "Egito", 
+      "style": "Desértico", 
+      "ibu": "África"
       }
     ];
   }
@@ -60,16 +105,32 @@ class MyApp extends StatelessWidget {
           }
         ),
         bottomNavigationBar: NewNavBar(
-          itemSelectedCallback: dataService.carregar
+          itemSelectedCallback: dataService.carregar,
+          icons: const [
+            Icon(Icons.coffee_outlined),
+            Icon(Icons.local_drink_outlined),
+            Icon(Icons.flag_outlined)
+          ],
+          labels: const [
+            "Coffees",
+            "Beers",
+            "Nations"
+          ],
         )
       ));
   }
 }
 
 class NewNavBar extends HookWidget {
+  List<Icon> icons;
+  List<String> labels;
   var itemSelectedCallback;
 
-  NewNavBar({this.itemSelectedCallback}){
+  NewNavBar({
+    this.icons = const [], 
+    this.labels = const [], 
+    this.itemSelectedCallback
+  }){
     itemSelectedCallback ??= (_){};
   }
 
@@ -83,6 +144,14 @@ class NewNavBar extends HookWidget {
         //carregarCervejas();
       },
       currentIndex: state.value,
+      items: List.generate(
+        icons.length, 
+        (index) => BottomNavigationBarItem(
+          icon: icons[index],
+          label: labels[index].toString() // Converti o rótulo para string
+        ),
+      ),
+/*
       items: const [
         BottomNavigationBarItem(
           label: "Cafés",
@@ -96,7 +165,9 @@ class NewNavBar extends HookWidget {
           label: "Nações", 
           icon: Icon(Icons.flag_outlined)
         )
-      ]);
+      ]
+*/
+    );
   }
 }
 
