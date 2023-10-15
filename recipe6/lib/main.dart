@@ -4,15 +4,27 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DataService {
   final ValueNotifier<List> tableStateNotifier = ValueNotifier([]);
+  List<String> propertyNames = [];
+  List<String> columnNames = [];
+
 
   void carregar(index){
     switch(index){
       case 0: 
         loadCoffees();
+        propertyNames = const ["name", "type", "info"];
+        columnNames = const ["Nome", "Tipo", "Info"];
+        break;
       case 1: 
         loadBeers();
+        propertyNames = const ["name", "style", "ibu"];
+        columnNames = const ["Nome", "Estilo", "IBU"];
+        break;
       case 2: 
         loadNations();
+        propertyNames = const ["country", "climate", "region"];
+        columnNames = const ["País", "Clima", "Região"];
+        break;
     }
   }
 
@@ -20,20 +32,21 @@ class DataService {
     tableStateNotifier.value = [
       {
       "name": "Cappuccino",
-      "style": "Espresso",
-      "ibu": "Amargo/Cremoso"
+      "type": "Espresso",
+      "info": "Amargo/Cremoso"
       },
       {
       "name": "Latte",
-      "style": "Espresso",
-      "ibu": "Suave/Cremoso"
+      "type": "Espresso",
+      "info": "Suave/Cremoso"
       },
       {
       "name": "Mocha",
-      "style": "Espresso",
-      "ibu": "Doce"
+      "type": "Espresso",
+      "info": "Doce"
       }
     ];
+    return;
   }
   void loadBeers(){
     tableStateNotifier.value = [
@@ -53,25 +66,27 @@ class DataService {
       "ibu": "82"
       }
     ];
+    return;
   }
   void loadNations(){
     tableStateNotifier.value = [
       {
-      "name": "Brasil",
-      "style": "Tropical",
-      "ibu": "América do Sul"
+      "country": "Brasil",
+      "climate": "Tropical",
+      "region": "América do Sul"
       },
       {
-      "name": "Rússia",
-      "style": "Polar",
-      "ibu": "Eurásia"
+      "country": "Rússia",
+      "climate": "Polar",
+      "region": "Eurásia"
       },
       {
-      "name": "Egito", 
-      "style": "Desértico", 
-      "ibu": "África"
+      "country": "Egito", 
+      "climate": "Desértico", 
+      "region": "África"
       }
     ];
+    return;
   }
 }
 final dataService = DataService();
@@ -92,15 +107,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Dicas"),
+          title: const Text("Infos"),
         ),
         body: ValueListenableBuilder(
           valueListenable: dataService.tableStateNotifier,
           builder:(_, value, __){
             return DataTableWidget(
-              jsonObjects: value, 
-              propertyNames: const ["name", "style", "ibu"], 
-              columnNames: const ["Nome", "Estilo", "IBU"]
+              jsonObjects: value,
+              propertyNames: dataService.propertyNames,
+              columnNames: dataService.columnNames
             );
           }
         ),
@@ -136,7 +151,7 @@ class NewNavBar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = useState(1);
+    final state = useState(1);
     return BottomNavigationBar(
       onTap: (index) {
         state.value = index;
@@ -151,22 +166,7 @@ class NewNavBar extends HookWidget {
           label: labels[index].toString() // Converti o rótulo para string
         ),
       ),
-/*
-      items: const [
-        BottomNavigationBarItem(
-          label: "Cafés",
-          icon: Icon(Icons.coffee_outlined),
-        ),
-        BottomNavigationBarItem(
-          label: "Cervejas", 
-          icon: Icon(Icons.local_drink_outlined)
-        ),
-        BottomNavigationBarItem(
-          label: "Nações", 
-          icon: Icon(Icons.flag_outlined)
-        )
-      ]
-*/
+
     );
   }
 }
@@ -178,12 +178,21 @@ class DataTableWidget extends StatelessWidget {
 
   DataTableWidget({
     this.jsonObjects = const [],
-    this.columnNames = const ["Nome", "Estilo", "IBU"],
-    this.propertyNames = const ["name", "style", "ibu"]
+    required this.columnNames,
+    required this.propertyNames,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (columnNames.isEmpty) {
+      return const Center(
+        child: Text(
+          "Toque em alguma das opções abaixo para exibição do conteúdo.",
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+
     return DataTable(
       columns: columnNames.map(
         (name) => DataColumn(
@@ -201,6 +210,7 @@ class DataTableWidget extends StatelessWidget {
             propName) => DataCell(Text(obj[propName]))
           ).toList()
         )
-      ).toList());
+      ).toList()
+    );
   }
 }
