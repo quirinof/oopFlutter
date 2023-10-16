@@ -4,12 +4,45 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DataService {
-  final ValueNotifier<List> tableStateNotifier = new ValueNotifier([]);
+  final ValueNotifier<List> tableStateNotifier = ValueNotifier([]);
+  List<String> columnNames = ["Nome", "Estilo", "IBU"];
+  List<String> propertyNames = ["name", "style", "ibu"];
+
   void carregar(index) {
-    var res = null;
-    print('carregar #1 - antes de carregarCervejas');
-    if (index == 1) res = carregarCervejas();
-    print('carregar #2 - carregarCervejas retornou $res');
+    /*  print('carregar #1 - antes de carregarCervejas'); */
+    switch (index) {
+      case 0:
+        columnNames = ["Nome", "Intensificador", "Notas"];
+        propertyNames = ["blend_name", "intensifier", "notes"];
+        carregarCafes();
+        break;
+      case 1:
+        columnNames = ["Nome", "Estilo", "IBU"];
+        propertyNames = ["name", "style", "ibu"];
+        carregarCervejas();
+        break;
+      case 2:
+        columnNames = ["Nacão", "Idioma", "Capital"];
+        propertyNames = ["nationality", "language", "capital"];
+        carregarNacoes();
+        break;
+    }
+    /*  print('carregar #2 - carregarCervejas retornou $res'); */
+  }
+
+  Future<void> carregarCafes() async {
+    var coffeesUri = Uri(
+        scheme: 'https',
+        host: 'random-data-api.com',
+        path: 'api/coffee/random_coffee',
+        queryParameters: {'size': '5'});
+
+    print('carregarCafes #1 - antes do await');
+    var jsonString = await http.read(coffeesUri);
+    print('carregarCafes #2 - depois do await');
+    var coffeesJson = jsonDecode(jsonString);
+
+    tableStateNotifier.value = coffeesJson;
   }
 
   Future<void> carregarCervejas() async {
@@ -17,7 +50,7 @@ class DataService {
         scheme: 'https',
         host: 'random-data-api.com',
         path: 'api/beer/random_beer',
-        queryParameters: {'size': 5});
+        queryParameters: {'size': '5'});
 
     print('carregarCervejas #1 - antes do await');
     var jsonString = await http.read(beersUri);
@@ -25,6 +58,21 @@ class DataService {
     var beersJson = jsonDecode(jsonString);
 
     tableStateNotifier.value = beersJson;
+  }
+
+  Future<void> carregarNacoes() async {
+    var nationsUri = Uri(
+        scheme: 'https',
+        host: 'random-data-api.com',
+        path: 'api/nation/random_nation',
+        queryParameters: {'size': '5'});
+
+    print('carregarNacoes #1 - antes do await');
+    var jsonString = await http.read(nationsUri);
+    print('carregarNacoes #2 - depois do await');
+    var nationsJson = jsonDecode(jsonString);
+
+    tableStateNotifier.value = nationsJson;
   }
 }
 
@@ -50,8 +98,8 @@ class MyApp extends StatelessWidget {
               builder: (_, value, __) {
                 return DataTableWidget(
                     jsonObjects: value,
-                    propertyNames: ["name", "style", "ibu"],
-                    columnNames: ["Nome", "Estilo", "IBU"]);
+                    columnNames: dataService.columnNames,
+                    propertyNames: dataService.propertyNames);
               }),
           bottomNavigationBar:
               NewNavBar(itemSelectedCallback: dataService.carregar),
@@ -60,10 +108,11 @@ class MyApp extends StatelessWidget {
 }
 
 class NewNavBar extends HookWidget {
-  final _itemSelectedCallback;
+  dynamic itemSelectedCallback;
 
-  NewNavBar({itemSelectedCallback})
-      : _itemSelectedCallback = itemSelectedCallback ?? (int) {}
+  NewNavBar({this.itemSelectedCallback}) {
+    itemSelectedCallback ??= (_) {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +122,7 @@ class NewNavBar extends HookWidget {
         onTap: (index) {
           state.value = index;
 
-          _itemSelectedCallback(index);
+          itemSelectedCallback(index);
         },
         currentIndex: state.value,
         items: const [
@@ -91,15 +140,13 @@ class NewNavBar extends HookWidget {
 
 class DataTableWidget extends StatelessWidget {
   final List jsonObjects;
-
   final List<String> columnNames;
-
   final List<String> propertyNames;
 
   DataTableWidget(
       {this.jsonObjects = const [],
-      this.columnNames = const ["Nome", "Estilo", "IBU"],
-      this.propertyNames = const ["name", "style", "ibu"]});
+      this.columnNames = const [],
+      this.propertyNames = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +155,7 @@ class DataTableWidget extends StatelessWidget {
             .map((name) => DataColumn(
                 label: Expanded(
                     child: Text(name,
-                        style: TextStyle(fontStyle: FontStyle.italic)))))
+                        style: const TextStyle(fontStyle: FontStyle.italic)))))
             .toList(),
         rows: jsonObjects
             .map((obj) => DataRow(
