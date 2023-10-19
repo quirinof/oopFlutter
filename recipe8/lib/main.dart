@@ -1,13 +1,24 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+enum TableStatus { idle, loading, ready, error }
+
 class DataService {
-  final ValueNotifier<List> tableStateNotifier = new ValueNotifier([]);
+  final ValueNotifier<Map<String, dynamic>> tableStateNotifier = ValueNotifier({
+    'status': TableStatus.idle,
+    'dataObjects': [],
+  });
 
   void carregar(index) {
     final funcoes = [carregarCafes, carregarCervejas, carregarNacoes];
+    tableStateNotifier.value = {
+      'status': TableStatus.loading,
+      'dataObjects': []
+    };
     funcoes[index]();
   }
 
@@ -19,17 +30,21 @@ class DataService {
     return;
   }
 
-  Future<void> carregarCervejas() async {
+  void carregarCervejas() {
     var beersUri = Uri(
-      scheme: 'https',
-      host: 'random-data-api.com',
-      path: 'api/beer/random_beer',
-      queryParameters: {'size': '5'},
-    );
+        scheme: 'https',
+        host: 'random-data-api.com',
+        path: 'api/beer/random_beer',
+        queryParameters: {'size': '5'});
 
-    var jsonString = await http.read(beersUri);
-    var beersJson = jsonDecode(jsonString);
-    tableStateNotifier.value = beersJson;
+    http.read(beersUri).then((jsonString) {
+      var beersJson = jsonDecode(jsonString);
+      tableStateNotifier.value = {
+        'status': TableStatus.ready,
+        'dataObjects': beersJson,
+        'propertyNames': ["name", "style", "ibu"]
+      };
+    });
   }
 }
 
@@ -53,11 +68,24 @@ class MyApp extends StatelessWidget {
         body: ValueListenableBuilder(
           valueListenable: dataService.tableStateNotifier,
           builder: (_, value, __) {
-            return DataTableWidget(
-              jsonObjects: value,
-              propertyNames: ["name", "style", "ibu"],
-              columnNames: ["Nome", "Estilo", "IBU"],
-            );
+            switch (value['status']) {
+              case TableStatus.idle:
+                return Center(child: Text("Toque algum botão"));
+
+              case TableStatus.loading:
+                return Center(child: CircularProgressIndicator());
+
+              case TableStatus.ready:
+                return DataTableWidget(
+                    jsonObjects: value['dataObjects'],
+                    propertyNames: value['propertyNames'],
+                    columnNames: ["Nome", "Estilo", "IBU"]);
+
+              case TableStatus.error:
+                return Text("Lascou");
+            }
+
+            return const Text("...");
           },
         ),
         bottomNavigationBar: NewNavBar(
@@ -117,17 +145,18 @@ class DataTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataTable(
-        columns: columnNames
-            .map((name) => DataColumn(
-                label: Expanded(
-                    child: Text(name,
-                        style: TextStyle(fontStyle: FontStyle.italic)))))
-            .toList(),
-        rows: jsonObjects
-            .map((obj) => DataRow(
-                cells: propertyNames
-                    .map((propName) => DataCell(Text(obj[propName])))
-                    .toList()))
-            .toList());
+      columns: columnNames
+          .map((name) => DataColumn(
+              label: Expanded(
+                  child: Text(name,
+                      style: TextStyle(fontStyle: FontStyle.italic)))))
+          .toList(),
+      rows: jsonObjects
+          .map((obj) => DataRow(
+              cells: propertyNames
+                  .map((propName) => DataCell(Text(obj[propName])))
+                  .toList()))
+          .toList(),
+    );
   }
 }
