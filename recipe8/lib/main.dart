@@ -23,11 +23,40 @@ class DataService {
   }
 
   void carregarCafes() {
-    return;
+    var coffeesUri = Uri(
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/coffee/random_coffee',
+      queryParameters: {'size': '5'},
+    );
+
+    http.read(coffeesUri).then((jsonString) {
+      var coffeesJson = jsonDecode(jsonString);
+      tableStateNotifier.value = {
+        'status': TableStatus.ready,
+        'dataObjects': coffeesJson,
+        'columnNames': ["Nome", "Intensificador", "Notas"],
+        'propertyNames': ["blend_name", "intensifier", "notes"],
+      };
+    });
   }
 
-  void carregarNacoes() {
-    return;
+  void carregarNacoes() async {
+    var nationsUri = Uri(
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/nation/random_nation',
+      queryParameters: {'size': '5'},
+    );
+
+    var jsonString = await http.read(nationsUri);
+    var nationsJson = jsonDecode(jsonString);
+    tableStateNotifier.value = {
+      'status': TableStatus.ready,
+      'dataObjects': nationsJson,
+      'columnNames': ["Nacão", "Idioma", "Capital"],
+      'propertyNames': ["nationality", "language", "capital"],
+    };
   }
 
   void carregarCervejas() {
@@ -42,7 +71,8 @@ class DataService {
       tableStateNotifier.value = {
         'status': TableStatus.ready,
         'dataObjects': beersJson,
-        'propertyNames': ["name", "style", "ibu"]
+        'columnNames': ["Nome", "Estilo", "IBU"],
+        'propertyNames': ["name", "style", "ibu"],
       };
     });
   }
@@ -70,16 +100,17 @@ class MyApp extends StatelessWidget {
           builder: (_, value, __) {
             switch (value['status']) {
               case TableStatus.idle:
-                return Center(child: Text("Toque algum botão"));
+                return Center(child: Text("Toque em algum botão"));
 
               case TableStatus.loading:
                 return Center(child: CircularProgressIndicator());
 
               case TableStatus.ready:
                 return DataTableWidget(
-                    jsonObjects: value['dataObjects'],
-                    propertyNames: value['propertyNames'],
-                    columnNames: ["Nome", "Estilo", "IBU"]);
+                  jsonObjects: value['dataObjects'],
+                  columnNames: value['columnNames'],
+                  propertyNames: value['propertyNames'],
+                );
 
               case TableStatus.error:
                 return Text("Lascou");
