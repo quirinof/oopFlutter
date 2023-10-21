@@ -38,33 +38,18 @@ class DataService {
         'columnNames': ["Nome", "Intensificador", "Notas"],
         'propertyNames': ["blend_name", "intensifier", "notes"],
       };
+    }).catchError((e) {
+      tableStateNotifier.value = {'status': TableStatus.error};
     });
-  }
-
-  void carregarNacoes() async {
-    var nationsUri = Uri(
-      scheme: 'https',
-      host: 'random-data-api.com',
-      path: 'api/nation/random_nation',
-      queryParameters: {'size': '5'},
-    );
-
-    var jsonString = await http.read(nationsUri);
-    var nationsJson = jsonDecode(jsonString);
-    tableStateNotifier.value = {
-      'status': TableStatus.ready,
-      'dataObjects': nationsJson,
-      'columnNames': ["Nacão", "Idioma", "Capital"],
-      'propertyNames': ["nationality", "language", "capital"],
-    };
   }
 
   void carregarCervejas() {
     var beersUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/beer/random_beer',
-        queryParameters: {'size': '5'});
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/beer/random_beer',
+      queryParameters: {'size': '5'},
+    );
 
     http.read(beersUri).then((jsonString) {
       var beersJson = jsonDecode(jsonString);
@@ -74,7 +59,31 @@ class DataService {
         'columnNames': ["Nome", "Estilo", "IBU"],
         'propertyNames': ["name", "style", "ibu"],
       };
+    }).catchError((e) {
+      tableStateNotifier.value = {'status': TableStatus.error};
     });
+  }
+
+  void carregarNacoes() async {
+    try {
+      var nationsUri = Uri(
+        scheme: 'https',
+        host: 'random-data-api.com',
+        path: 'api/nation/random_nation',
+        queryParameters: {'size': '5'},
+      );
+
+      var jsonString = await http.read(nationsUri);
+      var nationsJson = jsonDecode(jsonString);
+      tableStateNotifier.value = {
+        'status': TableStatus.ready,
+        'dataObjects': nationsJson,
+        'columnNames': ["Nacão", "Idioma", "Capital"],
+        'propertyNames': ["nationality", "language", "capital"],
+      };
+    } catch (e) {
+      tableStateNotifier.value = {'status': TableStatus.error};
+    }
   }
 }
 
@@ -89,7 +98,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
+      theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
@@ -100,7 +109,19 @@ class MyApp extends StatelessWidget {
           builder: (_, value, __) {
             switch (value['status']) {
               case TableStatus.idle:
-                return Center(child: Text("Toque em algum botão"));
+                return Column(children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/images/cafe-e-cerveja.jpg',
+                      width: 300.0,
+                      height: 300.0,
+                    ),
+                  ),
+                  Text(
+                    "Toque em qualquer botão",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ]);
 
               case TableStatus.loading:
                 return Center(child: CircularProgressIndicator());
@@ -113,7 +134,12 @@ class MyApp extends StatelessWidget {
                 );
 
               case TableStatus.error:
-                return Text("Lascou");
+                return Center(
+                  child: Text(
+                    "Falha na conexão.",
+                    style: TextStyle(fontSize: 30, color: Colors.red),
+                  ),
+                );
             }
 
             return const Text("...");
