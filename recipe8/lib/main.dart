@@ -14,7 +14,12 @@ class DataService {
   });
 
   void carregar(index) {
-    final funcoes = [carregarCafes, carregarCervejas, carregarNacoes];
+    final funcoes = [
+      carregarCafes,
+      carregarCervejas,
+      carregarComidas,
+      carregarNacoes
+    ];
     tableStateNotifier.value = {
       'status': TableStatus.loading,
       'dataObjects': []
@@ -62,6 +67,28 @@ class DataService {
     }).catchError((e) {
       tableStateNotifier.value = {'status': TableStatus.error};
     });
+  }
+
+  void carregarComidas() async {
+    try {
+      var foodsUri = Uri(
+        scheme: 'https',
+        host: 'random-data-api.com',
+        path: 'api/food/random_food',
+        queryParameters: {'size': '5'},
+      );
+
+      var jsonString = await http.read(foodsUri);
+      var foodsJson = jsonDecode(jsonString);
+      tableStateNotifier.value = {
+        'status': TableStatus.ready,
+        'dataObjects': foodsJson,
+        'columnNames': ["Prato", "Ingredientes", "Medida"],
+        'propertyNames': ["dish", "ingredient", "measurement"],
+      };
+    } catch (e) {
+      tableStateNotifier.value = {'status': TableStatus.error};
+    }
   }
 
   void carregarNacoes() async {
@@ -164,6 +191,7 @@ class NewNavBar extends HookWidget {
     var state = useState(1);
 
     return BottomNavigationBar(
+      fixedColor: Colors.black,
       onTap: (index) {
         state.value = index;
 
@@ -174,15 +202,23 @@ class NewNavBar extends HookWidget {
         BottomNavigationBarItem(
           label: "Cafés",
           icon: Icon(Icons.coffee_outlined),
+          backgroundColor: Colors.amber,
         ),
         BottomNavigationBarItem(
           label: "Cervejas",
           icon: Icon(Icons.local_drink_outlined),
+          backgroundColor: Colors.amber,
+        ),
+        BottomNavigationBarItem(
+          label: "Comidas",
+          icon: Icon(Icons.food_bank_outlined),
+          backgroundColor: Colors.amber,
         ),
         BottomNavigationBarItem(
           label: "Nações",
           icon: Icon(Icons.flag_outlined),
-        )
+          backgroundColor: Colors.amber,
+        ),
       ],
     );
   }
