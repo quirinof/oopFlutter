@@ -27,12 +27,14 @@ class DataService {
     funcoes[index]();
   }
 
+// foram adicionados, em todas as chamadas as api's, os tratamentos de erros
+
   void carregarCafes() {
     var coffeesUri = Uri(
       scheme: 'https',
       host: 'random-data-api.com',
       path: 'api/coffee/random_coffee',
-      queryParameters: {'size': '5'},
+      queryParameters: {'size': '15'},
     );
 
     http.read(coffeesUri).then((jsonString) {
@@ -53,7 +55,7 @@ class DataService {
       scheme: 'https',
       host: 'random-data-api.com',
       path: 'api/beer/random_beer',
-      queryParameters: {'size': '5'},
+      queryParameters: {'size': '15'},
     );
 
     http.read(beersUri).then((jsonString) {
@@ -74,7 +76,7 @@ class DataService {
       scheme: 'https',
       host: 'random-data-api.com',
       path: 'api/food/random_food',
-      queryParameters: {'size': '5'},
+      queryParameters: {'size': '15'},
     );
     try {
       var jsonString = await http.read(foodsUri);
@@ -95,7 +97,7 @@ class DataService {
       scheme: 'https',
       host: 'random-data-api.com',
       path: 'api/nation/random_nation',
-      queryParameters: {'size': '5'},
+      queryParameters: {'size': '15'},
     );
     try {
       var jsonString = await http.read(nationsUri);
@@ -143,19 +145,27 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Toque em qualquer botão",
+                    "Bem vindo ao App",
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  )
+                  ),
+                  Text(
+                    "Você deve tocar em um dos botões abaixo",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ]);
 
               case TableStatus.loading:
                 return Center(child: CircularProgressIndicator());
 
               case TableStatus.ready:
-                return DataTableWidget(
-                  jsonObjects: value['dataObjects'],
-                  columnNames: value['columnNames'],
-                  propertyNames: value['propertyNames'],
+                return SingleChildScrollView(
+                  child: Center(
+                    child: DataTableWidget(
+                      jsonObjects: value['dataObjects'],
+                      columnNames: value['columnNames'],
+                      propertyNames: value['propertyNames'],
+                    ),
+                  ),
                 );
 
               case TableStatus.error:
