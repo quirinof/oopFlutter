@@ -70,14 +70,13 @@ class DataService {
   }
 
   void carregarComidas() async {
+    var foodsUri = Uri(
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/food/random_food',
+      queryParameters: {'size': '5'},
+    );
     try {
-      var foodsUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/food/random_food',
-        queryParameters: {'size': '5'},
-      );
-
       var jsonString = await http.read(foodsUri);
       var foodsJson = jsonDecode(jsonString);
       tableStateNotifier.value = {
@@ -92,20 +91,19 @@ class DataService {
   }
 
   void carregarNacoes() async {
+    var nationsUri = Uri(
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/nation/random_nation',
+      queryParameters: {'size': '5'},
+    );
     try {
-      var nationsUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/nation/random_nation',
-        queryParameters: {'size': '5'},
-      );
-
       var jsonString = await http.read(nationsUri);
       var nationsJson = jsonDecode(jsonString);
       tableStateNotifier.value = {
         'status': TableStatus.ready,
         'dataObjects': nationsJson,
-        'columnNames': ["Nacão", "Idioma", "Capital"],
+        'columnNames': ["Nação", "Idioma", "Capital"],
         'propertyNames': ["nationality", "language", "capital"],
       };
     } catch (e) {
@@ -191,40 +189,41 @@ class NewNavBar extends HookWidget {
     var state = useState(1);
 
     return BottomNavigationBar(
-      fixedColor: Colors.black,
       onTap: (index) {
         state.value = index;
 
         _itemSelectedCallback(index);
       },
       currentIndex: state.value,
+      selectedItemColor: Colors.amber,
       items: const [
         BottomNavigationBarItem(
           label: "Cafés",
           icon: Icon(Icons.coffee_outlined),
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.black,
         ),
         BottomNavigationBarItem(
           label: "Cervejas",
           icon: Icon(Icons.local_drink_outlined),
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.black,
         ),
         BottomNavigationBarItem(
           label: "Comidas",
           icon: Icon(Icons.food_bank_outlined),
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.black,
         ),
         BottomNavigationBarItem(
           label: "Nações",
           icon: Icon(Icons.flag_outlined),
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.black,
         ),
       ],
     );
   }
 }
 
-class DataTableWidget extends StatelessWidget {
+class DataTableWidget extends HookWidget {
+  // transformada a classe em um hookWidget
   final List jsonObjects;
   final List<String> columnNames;
   final List<String> propertyNames;
@@ -237,12 +236,32 @@ class DataTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // adicionando os estados para as colunas
+    var stateIndex = useState(0);
+    var stateAscending = useState(true);
     return DataTable(
+      sortColumnIndex: stateIndex.value,
+      sortAscending: stateAscending.value,
       columns: columnNames
           .map((name) => DataColumn(
+              onSort: (index, Ascending) {
+                stateIndex.value = index;
+                stateAscending.value = Ascending;
+                // comparando os objetos para a ordenação
+                if (Ascending) {
+                  jsonObjects.sort((obj1, obj2) => obj1[propertyNames[index]]
+                      .compareTo(obj2[propertyNames[index]]));
+                } else {
+                  jsonObjects.sort((obj1, obj2) => obj2[propertyNames[index]]
+                      .compareTo(obj1[propertyNames[index]]));
+                }
+              },
               label: Expanded(
-                  child: Text(name,
-                      style: TextStyle(fontStyle: FontStyle.italic)))))
+                child: Text(
+                  name,
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              )))
           .toList(),
       rows: jsonObjects
           .map((obj) => DataRow(
