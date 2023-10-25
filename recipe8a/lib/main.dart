@@ -16,25 +16,26 @@ class DataService {
 
   void carregar(index) {
     final funcoes = [carregarCafes, carregarCervejas, carregarNacoes];
-    funcoes[index]();
-  }
+    final tiposItem = [ItemType.coffee, ItemType.beer, ItemType.nation];
 
-  void carregarCafes() {
-    //ignorar solicitação se uma requisição já estiver em curso
+    funcoes[index]();
     if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    if (tableStateNotifier.value['itemType'] != ItemType.coffee) {
+    if (tableStateNotifier.value['itemType'] != tiposItem[index]) {
       tableStateNotifier.value = {
         'status': TableStatus.loading,
         'dataObjects': [],
-        'itemType': ItemType.coffee
+        'itemType': tiposItem[index]
       };
     }
+  }
 
+  void carregarCafes() {
     var coffeesUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/coffee/random_coffee',
-        queryParameters: {'size': '10'});
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/coffee/random_coffee',
+      queryParameters: {'size': '10'},
+    );
     http.read(coffeesUri).then((jsonString) {
       var coffeesJson = jsonDecode(jsonString);
       //se já houver cafés no estado da tabela...
@@ -43,7 +44,6 @@ class DataService {
           ...tableStateNotifier.value['dataObjects'],
           ...coffeesJson
         ];
-
       tableStateNotifier.value = {
         'itemType': ItemType.coffee,
         'status': TableStatus.ready,
@@ -55,21 +55,12 @@ class DataService {
   }
 
   void carregarNacoes() {
-    //ignorar solicitação se uma requisição já estiver em curso
-    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    if (tableStateNotifier.value['itemType'] != ItemType.nation) {
-      tableStateNotifier.value = {
-        'status': TableStatus.loading,
-        'dataObjects': [],
-        'itemType': ItemType.nation
-      };
-    }
     var nationsUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/nation/random_nation',
-        queryParameters: {'size': '10'});
-
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/nation/random_nation',
+      queryParameters: {'size': '10'},
+    );
     http.read(nationsUri).then((jsonString) {
       var nationsJson = jsonDecode(jsonString);
       //se já houver nações no estado da tabela...
@@ -94,22 +85,12 @@ class DataService {
   }
 
   void carregarCervejas() {
-    //ignorar solicitação se uma requisição já estiver em curso
-    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    //emitir estado loading se items em exibição não forem cervejas
-    if (tableStateNotifier.value['itemType'] != ItemType.beer) {
-      tableStateNotifier.value = {
-        'status': TableStatus.loading,
-        'dataObjects': [],
-        'itemType': ItemType.beer
-      };
-    }
     var beersUri = Uri(
-        scheme: 'https',
-        host: 'random-data-api.com',
-        path: 'api/beer/random_beer',
-        queryParameters: {'size': '10'});
-
+      scheme: 'https',
+      host: 'random-data-api.com',
+      path: 'api/beer/random_beer',
+      queryParameters: {'size': '10'},
+    );
     http.read(beersUri).then((jsonString) {
       var beersJson = jsonDecode(jsonString);
       //se já houver cervejas no estado da tabela...
@@ -234,7 +215,6 @@ class ListWidget extends HookWidget {
     useEffect(() {
       controller.addListener(() {
         if (controller.position.pixels == controller.position.maxScrollExtent) {
-          print('end of scroll');
           if (_scrollEndedCallback is Function) {
             _scrollEndedCallback();
           }
