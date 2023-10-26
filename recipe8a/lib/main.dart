@@ -126,37 +126,38 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Dicas"),
-        ),
-        body: ValueListenableBuilder(
-          valueListenable: dataService.tableStateNotifier,
-          builder: (_, value, __) {
-            switch (value['status']) {
-              case TableStatus.idle:
-                return Center(child: Text("Toque algum botão, abaixo..."));
-
-              case TableStatus.loading:
-                return Center(child: CircularProgressIndicator());
-
-              case TableStatus.ready:
-                return ListWidget(
-                  jsonObjects: value['dataObjects'],
-                  propertyNames: value['propertyNames'],
-                  scrollEndedCallback: functionsMap[value['itemType']],
-                );
-
-              case TableStatus.error:
-                return Text("Lascou");
-            }
-
-            return Text("...");
-          },
-        ),
-        bottomNavigationBar: NewNavBar(
-          itemSelectedCallback: dataService.carregar,
-        ),
+      home: ValueListenableBuilder(
+        valueListenable: dataService.tableStateNotifier,
+        builder: (_, value, __) {
+          final count = value['dataObjects'].length;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Dicas ($count)"),
+            ),
+            body: Builder(
+              builder: (_) {
+                switch (value['status']) {
+                  case TableStatus.idle:
+                    return Center(child: Text("Toque algum botão, abaixo..."));
+                  case TableStatus.loading:
+                    return Center(child: CircularProgressIndicator());
+                  case TableStatus.ready:
+                    return ListWidget(
+                      jsonObjects: value['dataObjects'],
+                      propertyNames: value['propertyNames'],
+                      scrollEndedCallback: functionsMap[value['itemType']],
+                    );
+                  case TableStatus.error:
+                    return Text("Lascou");
+                }
+                return Text("...");
+              },
+            ),
+            bottomNavigationBar: NewNavBar(
+              itemSelectedCallback: dataService.carregar,
+            ),
+          );
+        },
       ),
     );
   }
@@ -171,11 +172,9 @@ class NewNavBar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var state = useState(1);
-
     return BottomNavigationBar(
       onTap: (index) {
         state.value = index;
-
         _itemSelectedCallback(index);
       },
       currentIndex: state.value,
