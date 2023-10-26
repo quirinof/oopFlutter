@@ -13,7 +13,11 @@ class DataService {
 
   int _numberOfItems = DEFAULT_N_ITEMS;
 
-  set numberOfItems(n) {
+  int get numberOfItems {
+    return _numberOfItems;
+  }
+
+  set numberOfItems(int n) {
     _numberOfItems = n < 0
         ? MIN_N_ITEMS
         : n > MAX_N_ITEMS
@@ -29,20 +33,21 @@ class DataService {
 
   void carregar(index) {
     final funcoes = [carregarCafes, carregarCervejas, carregarNacoes];
+    var tipoItem = [ItemType.coffee, ItemType.beer, ItemType.nation];
+
+    //ignorar solicitação se uma requisição já estiver em curso
+    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
+    if (tableStateNotifier.value['itemType'] != tipoItem[index]) {
+      tableStateNotifier.value = {
+        'status': TableStatus.loading,
+        'dataObjects': [],
+        'itemType': tipoItem[index],
+      };
+    }
     funcoes[index]();
   }
 
   void carregarCafes() {
-    //ignorar solicitação se uma requisição já estiver em curso
-    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    if (tableStateNotifier.value['itemType'] != ItemType.coffee) {
-      tableStateNotifier.value = {
-        'status': TableStatus.loading,
-        'dataObjects': [],
-        'itemType': ItemType.coffee
-      };
-    }
-
     var coffeesUri = Uri(
       scheme: 'https',
       host: 'random-data-api.com',
@@ -71,16 +76,6 @@ class DataService {
   }
 
   void carregarNacoes() {
-    //ignorar solicitação se uma requisição já estiver em curso
-    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    if (tableStateNotifier.value['itemType'] != ItemType.nation) {
-      tableStateNotifier.value = {
-        'status': TableStatus.loading,
-        'dataObjects': [],
-        'itemType': ItemType.nation
-      };
-    }
-
     var nationsUri = Uri(
       scheme: 'https',
       host: 'random-data-api.com',
@@ -114,17 +109,6 @@ class DataService {
   }
 
   void carregarCervejas() {
-    //ignorar solicitação se uma requisição já estiver em curso
-    if (tableStateNotifier.value['status'] == TableStatus.loading) return;
-    //emitir estado loading se items em exibição não forem cervejas
-    if (tableStateNotifier.value['itemType'] != ItemType.beer) {
-      tableStateNotifier.value = {
-        'status': TableStatus.loading,
-        'dataObjects': [],
-        'itemType': ItemType.beer
-      };
-    }
-
     var beersUri = Uri(
       scheme: 'https',
       host: 'random-data-api.com',
