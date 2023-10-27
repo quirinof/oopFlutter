@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../data/data_service.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    var popUpState = useState(7);
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       debugShowCheckedModeBanner: false,
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
           title: const Text("Dicas"),
           actions: [
             PopupMenuButton(
+              initialValue: popUpState.value,
               itemBuilder: (_) => [3, 7, 15]
                   .map((num) => PopupMenuItem(
                         value: num,
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
                   .toList(),
               onSelected: (number) {
                 dataService.numberOfItems = number;
+                popUpState.value = dataService.numberOfItems;
               },
             )
           ],
