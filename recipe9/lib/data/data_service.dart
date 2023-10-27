@@ -12,17 +12,22 @@ class DataService {
   static const DEFAULT_N_ITEMS = 7;
 
   int _numberOfItems = DEFAULT_N_ITEMS;
+  List _possibleNumbers = [MIN_N_ITEMS, DEFAULT_N_ITEMS, MAX_N_ITEMS];
 
   int get numberOfItems {
     return _numberOfItems;
   }
 
-  set numberOfItems(int n) {
-    _numberOfItems = n < 0
-        ? MIN_N_ITEMS
-        : n > MAX_N_ITEMS
-            ? MAX_N_ITEMS
-            : n;
+  set numberOfItems(n) {
+    _numberOfItems = n < 0 ? MIN_N_ITEMS : n > MAX_N_ITEMS ? MAX_N_ITEMS : n;
+  }
+
+  List get possibleNumbers {
+    return _possibleNumbers;
+  }
+  
+  set possibleNumbers(n) {
+    _possibleNumbers = possibleNumbers;
   }
 
   final ValueNotifier<Map<String, dynamic>> tableStateNotifier = ValueNotifier({

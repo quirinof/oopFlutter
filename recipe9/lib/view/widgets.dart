@@ -5,7 +5,7 @@ import '../data/data_service.dart';
 class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    var popUpState = useState(7);
+    var popUpState = useState(dataService.numberOfItems);
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       debugShowCheckedModeBanner: false,
@@ -15,12 +15,12 @@ class MyApp extends HookWidget {
           actions: [
             PopupMenuButton(
               initialValue: popUpState.value,
-              itemBuilder: (_) => [3, 7, 15]
-                  .map((num) => PopupMenuItem(
-                        value: num,
-                        child: Text("Carregar $num itens por vez"),
-                      ))
-                  .toList(),
+              itemBuilder: (_) => dataService.possibleNumbers.map(
+                (num) => PopupMenuItem(
+                  value: num,
+                  child: Text("Carregar $num itens por vez"),
+                )
+              ).toList(),
               onSelected: (number) {
                 dataService.numberOfItems = number;
                 popUpState.value = dataService.numberOfItems;
@@ -110,17 +110,20 @@ class DataTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DataTable(
-        columns: columnNames
-            .map((name) => DataColumn(
-                label: Expanded(
-                    child: Text(name,
-                        style: TextStyle(fontStyle: FontStyle.italic)))))
-            .toList(),
-        rows: jsonObjects
-            .map((obj) => DataRow(
-                cells: propertyNames
-                    .map((propName) => DataCell(Text(obj[propName])))
-                    .toList()))
-            .toList());
+      columns: columnNames.map(
+        (name) => DataColumn(
+          label: Expanded(
+            child: Text(name, style: TextStyle(fontStyle: FontStyle.italic))
+          )
+        )
+      ).toList(),
+      rows: jsonObjects.map(
+        (obj) => DataRow(
+          cells: propertyNames.map(
+            (propName) => DataCell(Text(obj[propName]))
+          ).toList()
+        )
+      ).toList()
+    );
   }
 }
