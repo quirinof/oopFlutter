@@ -39,7 +39,8 @@ class MyApp extends HookWidget {
                 return Center(child: CircularProgressIndicator());
 
               case TableStatus.ready:
-                return SingleChildScrollView(
+                return InteractiveViewer(
+                  constrained: false,
                   child: DataTableWidget(
                     jsonObjects: value['dataObjects'],
                     propertyNames: value['propertyNames'],
