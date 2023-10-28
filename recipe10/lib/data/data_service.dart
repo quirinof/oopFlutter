@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../util/ordenador.dart';
 
 enum TableStatus { idle, loading, ready, error }
 
 enum ItemType{
   beer, coffee, nation, none;
   String get asString => '$name';
-  List<String> get columns => 
-    this == coffee? ["Nome", "Origem", "Tipo"] :
-    this == beer? ["Nome", "Estilo", "IBU"]:
-    this == nation? ["Nome", "Capital", "Idioma","Esporte"]:
-    [] ;
-  List<String> get properties => 
-    this == coffee? ["blend_name","origin","variety"] :
-    this == beer? ["name","style","ibu"]:
-    this == nation? ["nationality","capital","language","national_sport"]:
-    [] ;
+  List<String> get columns => this == coffee? ["Nome", "Origem", "Tipo"] :
+                              this == beer? ["Nome", "Estilo", "IBU"]:
+                              this == nation? ["Nome", "Capital", "Idioma","Esporte"]:
+                              [] ;
+  List<String> get properties => this == coffee? ["blend_name","origin","variety"] :
+                                 this == beer? ["name","style","ibu"]:
+                                 this == nation? ["nationality","capital","language","national_sport"]:
+                                 [] ;
 }
 
 class DataService {
@@ -54,6 +53,21 @@ class DataService {
     carregarPorTipo(params[index]);
   }
 
+  void ordenarEstadoAtual(String propriedade){
+    List objetos =  tableStateNotifier.value['dataObjects'] ?? [];
+    if (objetos == []) return;
+    Ordenador ord = Ordenador();
+    var objetosOrdenados = [];
+    final type = tableStateNotifier.value['itemType'];
+    if (type == ItemType.beer && propriedade == "name"){
+        objetosOrdenados = ord.ordenarCervejasPorNomeCrescente(objetos);
+    }else if (type == ItemType.beer && propriedade == "style"){
+      objetosOrdenados = ord.ordenarCervejasPorEstiloCrescente(objetos);
+    }
+    
+    emitirEstadoOrdenado(objetosOrdenados, propriedade);
+  }
+
   void emitirEstadoCarregando(ItemType type){
     tableStateNotifier.value = {
       'status': TableStatus.loading,
@@ -75,6 +89,13 @@ class DataService {
     var json = jsonDecode(jsonString);
     json = [...tableStateNotifier.value['dataObjects'], ...json];
     return json;
+  }
+  void emitirEstadoOrdenado(List objetosOrdenados, String propriedade){
+    var estado = tableStateNotifier.value;
+    estado['dataObjects'] = objetosOrdenados;
+    estado['sortCriteria'] = propriedade;
+    estado['ascending'] = true;
+    tableStateNotifier.value = estado;
   }
 
   void emitirEstadoPronto(ItemType type, var json){
