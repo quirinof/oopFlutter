@@ -59,15 +59,7 @@ class DataService {
     Ordenador ord = Ordenador();
     var objetosOrdenados = [];
     final type = tableStateNotifier.value['itemType'];
-    if (type == ItemType.beer && propriedade == "name"){
-        objetosOrdenados = ord.ordenarCervejasPorNomeCrescente(objetos);
-    }else if (type == ItemType.beer && propriedade == "style"){
-      objetosOrdenados = ord.ordenarCervejasPorEstiloCrescente(objetos);
-    }else if (type == ItemType.coffee && propriedade == "blend_name"){
-      objetosOrdenados = ord.ordenarCafesPorNomeCrescente(objetos);
-    }else if (type == ItemType.nation && propriedade == "nationality"){
-      objetosOrdenados = ord.ordenarNacoesPorNomeCrescente(objetos);
-    }
+    objetosOrdenados = ord.ordenarCrescente(objetos, propriedade);
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
   }
