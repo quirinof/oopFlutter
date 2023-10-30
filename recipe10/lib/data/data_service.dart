@@ -63,6 +63,10 @@ class DataService {
         objetosOrdenados = ord.ordenarCervejasPorNomeCrescente(objetos);
     }else if (type == ItemType.beer && propriedade == "style"){
       objetosOrdenados = ord.ordenarCervejasPorEstiloCrescente(objetos);
+    }else if (type == ItemType.coffee && propriedade == "blend_name"){
+      objetosOrdenados = ord.ordenarCafesPorNomeCrescente(objetos);
+    }else if (type == ItemType.nation && propriedade == "nationality"){
+      objetosOrdenados = ord.ordenarNacoesPorNomeCrescente(objetos);
     }
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
