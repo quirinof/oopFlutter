@@ -58,7 +58,6 @@ class DataService {
     if (objetos == []) return;
     Ordenador ord = Ordenador();
     var objetosOrdenados = [];
-    final type = tableStateNotifier.value['itemType'];
     objetosOrdenados = ord.ordenarCrescente(objetos, propriedade);
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
