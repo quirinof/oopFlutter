@@ -58,12 +58,7 @@ class DataService {
     if (objetos == []) return;
     Ordenador ord = Ordenador();
     var objetosOrdenados = [];
-    final type = tableStateNotifier.value['itemType'];
-    if (type == ItemType.beer && propriedade == "name"){
-        objetosOrdenados = ord.ordenarFuderoso(objetos, DecididorCervejaNomeCrescente());
-    }else if (type == ItemType.beer && propriedade == "style"){
-      objetosOrdenados = ord.ordenarFuderoso(objetos, DecididorCervejaEstiloCrescente());
-    }
+    objetosOrdenados = ord.ordenarFuderoso(objetos, DecididorCrescente(), propriedade);
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
   }
@@ -125,41 +120,22 @@ class DataService {
 
 final dataService = DataService();
 
-class DecididorCervejaNomeCrescente extends Decididor{
+class DecididorCrescente extends Decididor{
   @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo) {
+  bool precisaTrocarAtualPeloProximo(atual, proximo, propriedade) {
     try{
-      return atual["name"].compareTo(proximo["name"]) > 0;
+      return atual[propriedade].compareTo(proximo[propriedade]) > 0;
     }catch (error){
       return false;
     }    
   }
 }
-class DecididorCervejaEstiloCrescente extends Decididor{
+
+class DecididorDecrescente extends Decididor{
   @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo) {
+  bool precisaTrocarAtualPeloProximo(atual, proximo, propriedade) {
     try{
-      return atual["style"].compareTo(proximo["style"]) > 0;
-    }catch (error){
-      return false;
-    }    
-  }
-}
-class DecididorCervejaNomeDecrescente extends Decididor{
-  @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo) {
-    try{
-      return atual["name"].compareTo(proximo["name"]) < 0;
-    }catch (error){
-      return false;
-    }    
-  }
-}
-class DecididorCervejaEstiloDecrescente extends Decididor{
-  @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo) {
-    try{
-      return atual["style"].compareTo(proximo["style"]) < 0;
+      return atual[propriedade].compareTo(proximo[propriedade]) < 0;
     }catch (error){
       return false;
     }    
