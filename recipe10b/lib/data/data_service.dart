@@ -130,14 +130,3 @@ class DecididorCrescente extends Decididor{
     }    
   }
 }
-
-class DecididorDecrescente extends Decididor{
-  @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo, propriedade) {
-    try{
-      return atual[propriedade].compareTo(proximo[propriedade]) < 0;
-    }catch (error){
-      return false;
-    }    
-  }
-}
