@@ -1,5 +1,5 @@
 class Ordenador{
-  List ordenarFuderoso(List objetos, Decididor decididor){
+  List ordenarFuderoso(List objetos, Function decididorCallback){
     List objetosOrdenados = List.of(objetos);
     bool trocouAoMenosUm;
     do{
@@ -7,7 +7,7 @@ class Ordenador{
       for (int i=0; i<objetosOrdenados.length-1; i++){
         var atual = objetosOrdenados[i];
         var proximo = objetosOrdenados[i+1];
-        if ( decididor.precisaTrocarAtualPeloProximo(atual,proximo) ){
+        if ( decididorCallback(atual,proximo) ){
           var aux = objetosOrdenados[i];
           objetosOrdenados[i] = objetosOrdenados[i+1];
           objetosOrdenados[i+1] = aux;

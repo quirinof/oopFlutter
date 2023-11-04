@@ -58,7 +58,7 @@ class DataService {
     if (objetos == []) return;
     Ordenador ord = Ordenador();
     Decididor d = ComparadorJSON(propriedade);
-    var objetosOrdenados = ord.ordenarFuderoso(objetos, d);
+    var objetosOrdenados = ord.ordenarFuderoso(objetos, d.precisaTrocarAtualPeloProximo);
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
   }
