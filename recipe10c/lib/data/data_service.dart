@@ -53,11 +53,11 @@ class DataService {
     carregarPorTipo(params[index]);
   }
 
-  void ordenarEstadoAtual(String propriedade){
+  void ordenarEstadoAtual(final String propriedade){
     List objetos =  tableStateNotifier.value['dataObjects'] ?? [];
     if (objetos == []) return;
     Ordenador ord = Ordenador();
-    Decididor d = FuncionarioDoMes(propriedade);
+    Decididor d = ComparadorJSON(propriedade);
     var objetosOrdenados = ord.ordenarFuderoso(objetos, d);
     
     emitirEstadoOrdenado(objetosOrdenados, propriedade);
@@ -120,21 +120,11 @@ class DataService {
 
 final dataService = DataService();
 
-class DecididorCervejaNomeCrescente extends Decididor{
-  @override
-  bool precisaTrocarAtualPeloProximo(atual, proximo) {
-    try{
-      return atual["name"].compareTo(proximo["name"]) > 0;
-    }catch (error){
-      return false;
-    }    
-  }
-}
-class FuncionarioDoMes extends Decididor{
+class ComparadorJSON extends Decididor{
   final String propriedade;
   final bool crescente;
 
-  FuncionarioDoMes(this.propriedade, [this.crescente = true]);
+  ComparadorJSON(this.propriedade, [this.crescente = true]);
 
   @override
   bool precisaTrocarAtualPeloProximo(atual, proximo) {
