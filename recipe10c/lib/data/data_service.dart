@@ -6,15 +6,15 @@ import '../util/ordenador.dart';
 enum TableStatus { idle, loading, ready, error }
 
 enum ItemType{
-  beer, coffee, nation, none;
+  restaurant, food, dessert, none;
   String get asString => '$name';
-  List<String> get columns => this == coffee? ["Nome", "Origem", "Tipo"] :
-                              this == beer? ["Nome", "Estilo", "IBU"]:
-                              this == nation? ["Nome", "Capital", "Idioma","Esporte"]:
+  List<String> get columns => this == restaurant? ["Nome", "Tipo", "Endereço"] :
+                              this == food? ["Prato", "Ingrediente", "Medição"]:
+                              this == dessert? ["Variedade", "Cobertura", "Sabor"]:
                               [] ;
-  List<String> get properties => this == coffee? ["blend_name","origin","variety"] :
-                                 this == beer? ["name","style","ibu"]:
-                                 this == nation? ["nationality","capital","language","national_sport"]:
+  List<String> get properties => this == restaurant? ["name","type","address"] :
+                                 this == food? ["dish","ingredient","measurement"]:
+                                 this == dessert? ["variety","topping","flavor"]:
                                  [] ;
 }
 
@@ -49,7 +49,7 @@ class DataService {
   });
 
   void carregar(index){
-    final params = [ItemType.coffee, ItemType.beer, ItemType.nation];
+    final params = [ItemType.restaurant, ItemType.food, ItemType.dessert];
     carregarPorTipo(params[index]);
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import '../data/data_service.dart';
-
 class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
@@ -81,16 +80,16 @@ class NewNavBar extends HookWidget {
       currentIndex: state.value,
       items: const [
         BottomNavigationBarItem(
-          label: "Cafés",
-          icon: Icon(Icons.coffee_outlined),
+          label: "Restaurantes",
+          icon: Icon(Icons.food_bank_outlined),
         ),
         BottomNavigationBarItem(
-          label: "Cervejas",
-          icon: Icon(Icons.local_drink_outlined),
+          label: "Comidas",
+          icon: Icon(Icons.restaurant_outlined),
         ),
         BottomNavigationBarItem(
-          label: "Nações",
-          icon: Icon(Icons.flag_outlined),
+          label: "Sobremesas",
+          icon: Icon(Icons.cake_outlined),
         )
       ],
     );
