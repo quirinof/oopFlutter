@@ -44,6 +44,7 @@ class MyApp extends HookWidget {
                     jsonObjects: value['dataObjects'],
                     propertyNames: value['propertyNames'],
                     columnNames: value['columnNames'],
+                    sortCallback: dataService.ordenarEstadoAtual
                   ),
                 );
 
@@ -96,24 +97,32 @@ class NewNavBar extends HookWidget {
   }
 }
 
-class DataTableWidget extends StatelessWidget {
+class DataTableWidget extends HookWidget {
   final List jsonObjects;
   final List<String> columnNames;
   final List<String> propertyNames;
+  final _sortCallback;
 
   DataTableWidget({
-    this.jsonObjects = const [],
-    this.columnNames = const [],
-    this.propertyNames = const [],
-  });
+    this.jsonObjects = const [], 
+    this.columnNames = const [], 
+    this.propertyNames= const [], sortCallback
+  }) : _sortCallback = sortCallback ?? (String, bool){}
 
   @override
   Widget build(BuildContext context) {
+    var isAscending = useState(false);
+    var sortedColumn = useState(0);
     return DataTable(
+      sortAscending: isAscending.value,
+      sortColumnIndex: sortedColumn.value,
       columns: columnNames.map(
         (name) => DataColumn(
-          onSort: (columnIndex, ascending) => 
-            dataService.ordenarEstadoAtual(propertyNames[columnIndex]),
+          onSort: (columnIndex, ascending) {
+            _sortCallback(propertyNames[columnIndex], ascending);
+            sortedColumn.value = columnIndex;
+            isAscending.value = ascending;
+          },
           label: Expanded(
             child: Text(name, style: TextStyle(fontStyle: FontStyle.italic))
           )

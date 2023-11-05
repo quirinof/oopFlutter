@@ -53,14 +53,14 @@ class DataService {
     carregarPorTipo(params[index]);
   }
 
-  void ordenarEstadoAtual(final String propriedade){
+  void ordenarEstadoAtual(final String propriedade, final bool ascending){
     List objetos =  tableStateNotifier.value['dataObjects'] ?? [];
     if (objetos == []) return;
     Ordenador ord = Ordenador();
-    Decididor d = ComparadorJSON(propriedade);
+    Decididor d = ComparadorJSON(propriedade, ascending);
     var objetosOrdenados = ord.ordenarFuderoso(objetos, d.precisaTrocarAtualPeloProximo);
     
-    emitirEstadoOrdenado(objetosOrdenados, propriedade);
+    emitirEstadoOrdenado(objetosOrdenados, propriedade, ascending);
   }
 
   void emitirEstadoCarregando(ItemType type){
@@ -85,11 +85,11 @@ class DataService {
     json = [...tableStateNotifier.value['dataObjects'], ...json];
     return json;
   }
-  void emitirEstadoOrdenado(List objetosOrdenados, String propriedade){
+  void emitirEstadoOrdenado(List objetosOrdenados, String propriedade, bool ascending){
     var estado = tableStateNotifier.value;
     estado['dataObjects'] = objetosOrdenados;
     estado['sortCriteria'] = propriedade;
-    estado['ascending'] = true;
+    estado['ascending'] = ascending;
     tableStateNotifier.value = estado;
   }
 
