@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../util/ordenador.dart';
+import '../util/filtrador.dart';
 
 enum TableStatus { idle, loading, ready, error }
 
@@ -63,11 +64,24 @@ class DataService {
     emitirEstadoOrdenado(objetosOrdenados, propriedade, ascending);
   }
 
+  List filtrarObjetos() {
+    String filtro = tableStateNotifier.value['filterCriteria'];
+    List objetos = tableStateNotifier.value['dataObjects'] ?? [];
+    if (objetos == []) return [];
+    List propriedades = tableStateNotifier.value['propertyNames'];
+    Filtrador fil = Filtrador();
+    FilterDecider d = DecididorFiltroJSON(propriedades);
+    List objetosFiltrados = fil.filtrar(objetos, filtro, d.dentroDoFiltro);
+
+    return objetosFiltrados;
+  }
+
   void emitirEstadoCarregando(ItemType type){
     tableStateNotifier.value = {
       'status': TableStatus.loading,
       'dataObjects': [],
-      'itemType': type
+      'itemType': type,
+      'filterCriteria': ''
     };
   }
 
@@ -85,11 +99,18 @@ class DataService {
     json = [...tableStateNotifier.value['dataObjects'], ...json];
     return json;
   }
+
   void emitirEstadoOrdenado(List objetosOrdenados, String propriedade, bool ascending){
-    var estado = tableStateNotifier.value;
+    var estado = Map<String, dynamic>.from(tableStateNotifier.value);
     estado['dataObjects'] = objetosOrdenados;
     estado['sortCriteria'] = propriedade;
     estado['ascending'] = ascending;
+    tableStateNotifier.value = estado;
+  }
+
+  void emitirEstadoFiltrado(String filtro) {
+    var estado = Map<String, dynamic>.from(tableStateNotifier.value);
+    estado['filterCriteria'] = filtro;
     tableStateNotifier.value = estado;
   }
 
@@ -99,7 +120,8 @@ class DataService {
       'status': TableStatus.ready,
       'dataObjects': json,
       'propertyNames': type.properties,
-      'columnNames': type.columns
+      'columnNames': type.columns,
+      'filterCriteria': ''
     };
   }
 
@@ -134,5 +156,21 @@ class ComparadorJSON extends Decididor{
     }catch (error){
       return false;
     }    
+  }
+}
+
+class DecididorFiltroJSON extends FilterDecider {
+  final List propriedades;
+
+  DecididorFiltroJSON(this.propriedades);
+
+  @override
+  bool dentroDoFiltro(objeto, filtro) {
+    bool achouAoMenosUm = false;
+    for (int i=0; i<propriedades.length-1; i++) {
+      achouAoMenosUm = objeto[propriedades[i]].contains(filtro) ? true : false;
+      if (achouAoMenosUm) break;
+    }
+    return achouAoMenosUm;
   }
 }
