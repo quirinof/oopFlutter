@@ -12,6 +12,24 @@ class MyApp extends HookWidget {
         appBar: AppBar(
           title: const Text("Dicas"),
           actions: [
+            SearchBar(
+              leading: const Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              constraints: const BoxConstraints(
+                minWidth: 1.0,
+                maxWidth: 300.0,
+              ),
+              onChanged: (filter) {
+                if (filter.length >= 3) {
+                  dataService.emitirEstadoFiltrado(filter);
+                }
+                else {
+                  dataService.emitirEstadoFiltrado('');
+                }
+              },
+            ),
             PopupMenuButton(
               initialValue: popUpState.value,
               itemBuilder: (_) => dataService.possibleNumbers.map(
@@ -41,7 +59,7 @@ class MyApp extends HookWidget {
                 return InteractiveViewer(
                   constrained: false,
                   child: DataTableWidget(
-                    jsonObjects: value['dataObjects'],
+                    jsonObjects: dataService.filtrarObjetos(),
                     propertyNames: value['propertyNames'],
                     columnNames: value['columnNames'],
                     sortCallback: dataService.ordenarEstadoAtual
